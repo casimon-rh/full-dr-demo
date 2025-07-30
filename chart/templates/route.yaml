@@ -1,0 +1,21 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: {{ include "default.fullname" . }}
+  labels:
+    {{- include "default.labels" . | nindent 4 }}
+  {{- if .Values.route.injectTimeout }}
+  annotations: 
+    haproxy.router.openshift.io/timeout: 600s
+  {{- end }}
+spec:
+  # host: {{ include "default.name" . }}-{{ .Release.Namespace }}{{ .Values.route.overrideEnvironment }}.{{ .Values.route.baseUrl}}
+  to:
+    kind: Service
+    name: {{ include "default.fullname" . }}
+    weight: 100
+  port:
+    targetPort: {{ .Values.service.port }}
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Allow

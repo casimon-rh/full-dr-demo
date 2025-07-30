@@ -1,0 +1,26 @@
+replicaCount: 1
+
+image:
+  repository: registry.access.redhat.com
+  pullPolicy: IfNotPresent
+  tag: "latest"
+  overrideName: "nginx-124"
+  overrideNamespace: "ubi8"
+
+fullnameOverride: "test-nginx"
+
+command:
+  override: true
+  list:
+  - nginx
+  - '-g'
+  - '"daemon off;"'
+
+containerVolumes:
+  create: true
+  list:
+  - name: test
+    accessModes:
+      - ReadWriteOnce
+    storageClass: ocs-storagecluster-ceph-rbd
+    size: 1Gi

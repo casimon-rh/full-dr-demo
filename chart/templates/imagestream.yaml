@@ -1,0 +1,9 @@
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  name: {{ include "default.fullname" . }}
+  labels:
+    {{- include "default.labels" . | nindent 4 }}
+spec:
+  lookupPolicy:
+    local: false

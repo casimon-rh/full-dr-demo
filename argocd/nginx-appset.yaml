@@ -1,0 +1,53 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: nginx-dr
+  namespace: openshift-gitops
+spec:
+  generators:
+    - clusterDecisionResource:
+        configMapRef: acm-placement
+        labelSelector:
+          matchLabels:
+            cluster.open-cluster-management.io/placement: gitops-placement
+        requeueAfterSeconds: 180
+  template:
+    metadata:
+      labels:
+        velero.io/exclude-from-backup: 'true'
+      name: 'nginx-dr-{{name}}'
+    spec:
+      destination:
+        namespace: default
+        server: '{{server}}'
+      project: default
+      sources:
+        - helm:
+            values: 
+              replicaCount: 1
+              image:
+                repository: registry.access.redhat.com
+                pullPolicy: IfNotPresent
+                tag: "latest"
+                overrideName: "nginx-124"
+                overrideNamespace: "ubi8"
+              fullnameOverride: "test-nginx"
+              command:
+                override: true
+                list:
+                - nginx
+                - '-g'
+                - '"daemon off;"'
+              containerVolumes:
+                create: true
+                list:
+                - name: test
+                  accessModes:
+                    - ReadWriteOnce
+                  storageClass: ocs-storagecluster-ceph-rbd
+                  size: 1Gi
+          path: chart/
+          repoURL: 'https://github.com/casimon-rh/full-dr-demo'
+          targetRevision: main
+      syncPolicy:
+        automated: {}
