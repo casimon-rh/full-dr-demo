@@ -11,6 +11,7 @@ metadata:
     app.kubernetes.io/managed-by: {{ $dot.Release.Service }}
     app.kubernetes.io/name: {{ default $dot.Chart.Name $dot.Values.nameOverride | trunc 63 | trimSuffix "-" }}
     app.kubernetes.io/instance: {{ $dot.Release.Name }}
+    app.kubernetes.io/volume: {{ $dot.Values.fullnameOverride | default $dot.Chart.Name }}
     meta.helm.sh/release-namespace: {{ $dot.Release.Namespace }}
 spec:
   accessModes:
