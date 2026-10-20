@@ -4,7 +4,8 @@ metadata:
   name: full-dr-demo
   annotations:
     github.com/project-slug: casimon-rh/full-dr-demo
+    ://github.com: casimon-rh/full-dr-demo
 spec:
-  type: other
+  type: service
   lifecycle: unknown
   owner: user1
